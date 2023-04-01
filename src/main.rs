@@ -1,5 +1,7 @@
-use neotally::*;
+extern crate neotally;
 use std::env;
+
+use neotally::Tally;
 
 fn main() {
     let arguments: Vec<String> = env::args().collect();
@@ -7,6 +9,6 @@ fn main() {
     
     println!(
         "{}",
-        Tally::get_formatted_string(get_tally(file_path))
+        Tally::get_formatted_string(Tally::new().calculate(file_path))
     );
 }

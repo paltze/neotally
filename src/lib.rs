@@ -1,24 +1,22 @@
 use std::fs;
 
-#[derive(Debug)]
-#[derive(Clone)]
-pub struct Word (String, u32);
-
 pub struct Tally {
-    list: Vec<Word>
-}
-
-pub fn get_tally(file_path: String) -> Vec<Word> {
-    let file_contents: String = fs::read_to_string(file_path).expect("No such file");
-    let iter: Vec<&str> = file_contents.split_whitespace().collect();
-    let mut token = Tally {
-        list: Vec::new()
-    };
-    token.calculate(iter)
+    list: Vec<(String, u32)>
 }
 
 impl Tally {
-    fn calculate(&mut self, iter: Vec<&str>) -> Vec<Word> {
+    pub fn new() -> Tally {
+        let tally: Tally = Tally {
+            list: Vec::new()
+        };
+        tally
+    }
+
+    pub fn calculate(&mut self, file_path: String) -> Vec<(String, u32)> {
+        self.list = Vec::new();
+        let file_contents: String = fs::read_to_string(file_path).expect("No such file");
+        let iter: Vec<&str> = file_contents.split_whitespace().collect();
+
         let mut is_empty_string: Option<usize> = None;
         for word in iter {
             is_empty_string = self.tally(Tally::format_word(word));
@@ -43,10 +41,7 @@ impl Tally {
         };
         if !edited {
             if word == "" { return Some(self.list.len()); };
-            let new_word = Word {
-                0: word,
-                1: 1
-            };
+            let new_word = (word, 1);
             self.list.push(new_word);
         }
 
@@ -68,7 +63,7 @@ impl Tally {
         Ok(chars.into_iter().collect())
     }
 
-    pub fn get_formatted_string(list: Vec<Word>) -> String {
+    pub fn get_formatted_string(list: Vec<(String, u32)>) -> String {
         let mut res: String = String::new();
         let mut total: u32 = 0;
 
